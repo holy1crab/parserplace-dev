@@ -1,0 +1,22 @@
+version: "3.9"
+services:
+  db:
+    image: pp/db:1.0
+    build:
+      context: ./db
+      dockerfile: Dockerfile
+    environment:
+      POSTGRES_PASSWORD: ${DB_ROOT_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - "./volume/db:/var/lib/postgresql/data"
+    #      - "./volume/log/db:/var/log/mysql"
+    ports:
+      - "15432:5432"
+    restart: unless-stopped
+networks:
+  default:
+    name: pp_shared_network
+    external: true

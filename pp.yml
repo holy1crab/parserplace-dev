@@ -1,0 +1,83 @@
+version: "3.9"
+services:
+  db:
+    image: pp/db:1.0
+    build:
+      context: ./db
+      dockerfile: Dockerfile
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD} # required
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_DB: ${DB_DATABASE}
+    volumes:
+      - "./volume/db:/var/lib/postgresql/data"
+    #      - "./volume/log/db:/var/log/mysql"
+    ports:
+      - "15432:5432"
+    restart: unless-stopped
+  redis:
+    build:
+      context: ./redis
+      dockerfile: Dockerfile
+    ports:
+      - "16379:6379"
+    volumes:
+      - "./volume/redis/data:/data"
+  nginx-pp:
+    build:
+      context: ./nginx-pp
+      dockerfile: Dockerfile
+    ports:
+      - "${PP_PORT}:80"
+    depends_on:
+      - pp-api
+    volumes:
+      - "./volume/log/nginx-pp:/var/log/nginx"
+    restart: "no"
+  pp-api:
+    build:
+      context: ./pp-api
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    networks:
+      - default
+      - pp_shared_network
+    environment:
+      ENV: ${ENV}
+      PORT: 3000
+      WEB_SOCKET_PORT: 3001
+      BASE_RESOURCE_URL: ${MANAGEMENT_BASE_RESOURCE_URL}
+      BASE_RESOURCE_PATH: "/pp/resource"
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_LOGGING: ${DB_LOGGING}
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_USERNAME: ${REDIS_USERNAME}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_SECURE: ${SMTP_SECURE}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_AUTH_USERNAME: ${SMTP_AUTH_USERNAME}
+      SMTP_AUTH_PASSWORD: ${SMTP_AUTH_PASSWORD}
+      SMTP_DEFAULT_SENDER: ${SMTP_DEFAULT_SENDER}
+      SMTP_DEBUG_LEVEL: ${SMTP_DEBUG_LEVEL}
+      SMTP_FAKE_SENDING: ${SMTP_FAKE_SENDING}
+      SMTP_FAKE_SENDING_DELAY: ${SMTP_FAKE_SENDING_DELAY}
+      NOTIFICATION_EMAILS: ${NOTIFICATION_EMAILS}
+      EMAIL_DOMAIN: ${EMAIL_DOMAIN}
+      SERVICE_HOST: ${SERVICE_HOST}
+    volumes:
+      - "./ImageMagick:/home/node/.config/ImageMagick"
+      - "${VOLUME_PP_API_PATH}:/app"
+      - "${VOLUME_BASE_RESOURCE_PATH}:/pp/resource"
+    restart: "no"
+networks:
+  default:
+  pp_shared_network:
+    name: pp_shared_network
+    external: true
