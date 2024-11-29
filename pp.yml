@@ -71,6 +71,7 @@ services:
       NOTIFICATION_EMAILS: ${NOTIFICATION_EMAILS}
       EMAIL_DOMAIN: ${EMAIL_DOMAIN}
       SERVICE_HOST: ${SERVICE_HOST}
+      PUPPETEER_EXECUTABLE_PATH: ${PUPPETEER_EXECUTABLE_PATH}
     volumes:
       - "./ImageMagick:/home/node/.config/ImageMagick"
       - "${VOLUME_PP_API_PATH}:/app"
