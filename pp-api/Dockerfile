@@ -1,4 +1,4 @@
-FROM node:21.6.2-bookworm
+FROM node:22.11.0-bookworm
 
 RUN curl -fsSL https://dl-ssl.google.com/linux/linux_signing_key.pub | gpg --dearmor | tee /etc/apt/trusted.gpg.d/google-linux.gpg > /dev/null \
         && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \

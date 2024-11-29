@@ -1,3 +1,3 @@
-FROM postgres:16.2-bookworm
+FROM postgres:17.1-bookworm
 
 #COPY ./custom.cnf /etc/mysql/conf.d
