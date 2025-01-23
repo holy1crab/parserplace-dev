@@ -1,0 +1,10 @@
+include:
+  - pp.yml
+services:
+  pp-web:
+    build:
+      context: ./pp-web
+      dockerfile: Dockerfile
+    volumes:
+      - "${VOLUME_PP_WEB_PATH}:/app"
+    restart: "no"
