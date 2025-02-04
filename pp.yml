@@ -10,7 +10,6 @@ services:
       POSTGRES_DB: ${DB_DATABASE}
     volumes:
       - "./volume/db:/var/lib/postgresql/data"
-    #      - "./volume/log/db:/var/log/mysql"
     ports:
       - "15432:5432"
     restart: unless-stopped
